@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ГОЛОВОРЕЗЫ Private Suite</title>
+    <!-- Подключаем официальный скрипт Телеграма для Mini Apps -->
+    <script src="https://telegram.org"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #e53935;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        p { color: #aaaaaa; font-size: 14px; }
+        .btn-booking {
+            background-color: #1e1e1e;
+            border: 1px solid #e53935;
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn-booking:hover {
+            background-color: #e53935;
+            color: black;
+        }
+        .price { color: #e53935; }
+        .btn-booking:hover .price { color: black; }
+    </style>
+</head>
+<body>
+
+    <h1>ГОЛОВОРЕЗЫ</h1>
+    <p>Private Suite // Уральский Андеграунд</p>
+    <p>Выбери услугу для старта записи:</p>
+
+    <!-- Кнопки услуг, которые отправляют данные обратно в бот -->
+    <button class="btn-booking" onclick="selectService('Мужская стрижка (Fading)', '1000')">
+        <span>✂️ Мужская стрижка</span>
+        <span class="price">1000 ₽</span>
+    </button>
+
+    <button class="btn-booking" onclick="selectService('Моделирование бороды', '600')">
+        <span>🧔 Стрижка бороды</span>
+        <span class="price">600 ₽</span>
+    </button>
+
+    <button class="btn-booking" onclick="selectService('🔥 Комплекс (Стрижка + Борода)', '1300')">
+        <span>🔥 Полный Комплекс</span>
+        <span class="price">1300 ₽</span>
+    </button>
+
+    <script>
+        // Инициализируем WebApp Телеграма
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Расширяем окно на весь экран телефона
+
+        function selectService(name, price) {
+            // Формируем данные в формате JSON
+            const data = JSON.stringify({
+                service: name,
+                price: price
+            });
+            // Отправляем данные роботу и закрываем мини-приложение
+            tg.sendData(data);
+            tg.close();
+        }
+    </script>
+</body>
+</html>
