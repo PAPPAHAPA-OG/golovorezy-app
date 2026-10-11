@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ГОЛОВОРЕЗЫ // Private Suite</title>
+  <style>
+    :root {
+      --t-headline-font: 'Impact', 'Arial Black', sans-serif;
+      --t-text-font: 'Courier New', Courier, monospace;
+    }
+    body, html { margin: 0; padding: 0; background: #050505; color: #fff; font-family: var(--t-text-font); scroll-behavior: smooth; }
+    .vb-brt-root, .vb-brt-root * { box-sizing: border-box; }
+    
+    /* Шум уральского андеграунда */
+    .vb-brt-root::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: 0.06; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://w3.org'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    }
+
+    /* БЕГУЩАЯ СТРОКА */
+    .vb-brt-strip { background: #0a0a0a; color: #f5f3ef; border-bottom: 1px solid #1a1a1a; overflow: hidden; font-family: var(--t-headline-font); text-transform: uppercase; font-size: 18px; letter-spacing: 0.08em; white-space: nowrap; }
+    .vb-brt-strip__track { display: flex; width: max-content; padding: 14px 0; animation: vb-brt-marquee 25s linear infinite; }
+    .vb-brt-strip__item { padding: 0 28px; }
+    @keyframes vb-brt-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* HERO БЛОК */
+    .vb-brt-hero { position: relative; min-height: 50vh; background: #050505; display: flex; align-items: flex-end; padding: 48px 32px; border-bottom: 1px solid #1a1a1a; }
+    .vb-brt-hero__title { font-family: var(--t-headline-font); font-weight: 900; font-size: clamp(55px, 12vw, 150px); line-height: 0.85; text-transform: uppercase; margin: 0; color: #fff; }
+    .vb-brt-hero__title span { display: block; color: transparent; -webkit-text-stroke: 1.5px #fff; font-style: italic; }
+    .vb-brt-hero__tagline { font-family: var(--t-headline-font); font-size: clamp(22px, 3vw, 40px); text-transform: uppercase; margin: 16px 0; color: #e53935; }
+
+    /* КОНТЕЙНЕР МОДУЛЯ ЗАПИСИ */
+    .booking-container { max-width: 900px; margin: 0 auto; padding: 60px 20px 100px; }
+    .section-title { font-family: var(--t-headline-font); font-size: 42px; text-transform: uppercase; border-bottom: 2px solid #fff; padding-bottom: 12px; margin-bottom: 30px; letter-spacing: -1px; }
+    
+    .service-card { display: flex; justify-content: space-between; align-items: center; padding: 24px 16px; border-bottom: 1px solid #333; cursor: pointer; transition: 0.3s; }
+    .service-card:hover, .service-card.active { background: #e53935; color: #000; font-weight: bold; }
+    .service-card:hover .price, .service-card.active .price { color: #000; }
+    .service-name { font-size: 20px; text-transform: uppercase; }
+    .price { color: #e53935; font-family: var(--t-headline-font); font-size: 24px; }
+
+    /* КАЛЕНДАРЬ И ЧАСЫ */
+    .hidden { display: none; }
+    .grid-dates, .grid-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 40px; }
+    .btn-choice { background: #111; border: 1px solid #333; color: #fff; padding: 15px; text-align: center; text-transform: uppercase; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .btn-choice:hover:not(.disabled) { border-color: #e53935; color: #e53935; }
+    .btn-choice.active { background: #fff; color: #000; border-color: #fff; }
+    .btn-choice.disabled { opacity: 0.25; cursor: not-allowed; text-decoration: line-through; background: #0a0a0a; }
+
+    /* ФОРМА КОНТАКТОВ */
+    .input-field { width: 100%; background: #111; border: 1px solid #333; color: #fff; padding: 16px; font-size: 16px; margin-bottom: 16px; outline: none; }
+    .input-field:focus { border-color: #e53935; }
+    .btn-submit { width: 100%; background: #e53935; color: #000; border: none; padding: 20px; font-family: var(--t-headline-font); font-size: 22px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+    .btn-submit:hover { background: #fff; }
+    
+    #success-screen { text-align: center; padding: 40px 20px; border: 1px dashed #e53935; }
+    #success-screen h3 { font-family: var(--t-headline-font); font-size: 36px; color: #e53935; margin-top: 0; }
+  </style>
+</head>
+<body class="vb-brt-root">
+
+  <!-- Бегущая строка -->
+  <div class="vb-brt-strip">
+    <div class="vb-brt-strip__track">
+      <div class="vb-brt-strip__item">ГОЛОВОРЕЗЫ PRIVATE SUITE ✦ БЕЗУПРЕЧНЫЙ ФЕЙД ✦ УРАЛЬСКИЙ АНДЕГРАУНД ✦</div>
+      <div class="vb-brt-strip__item">ГОЛОВОРЕЗЫ PRIVATE SUITE ✦ БЕЗУПРЕЧНЫЙ ФЕЙД ✦ УРАЛЬСКИЙ АНДЕГРАУНД ✦</div>
+    </div>
+  </div>
+
+  <!-- Обложка -->
+  <div class="vb-brt-hero">
+    <div class="vb-brt-hero__inner">
+      <h1 class="vb-brt-hero__title">ГОЛОВОРЕЗЫ<span>PRIVATE SUITE</span></h1>
+      <p class="vb-brt-hero__tagline">Только ты и мастер // Boom-Bap подкаст</p>
+    </div>
+  </div>
+
+  <!-- Модуль Онлайн-Записи -->
+  <div class="booking-container">
+    
+    <!-- ШАГ 1: ВЫБОР УСЛУГИ -->
+    <div id="step-services">
+      <div class="section-title">1. Выбери услугу</div>
+      <div class="service-card" onclick="selectService(this, '✂️ Мужская стрижка', '1000')">
+        <span class="service-name">✂️ Мужская стрижка (Fading)</span>
+        <span class="price">1000 ₽</span>
+      </div>
+      <div class="service-card" onclick="selectService(this, '🧔 Стрижка бороды', '600')">
+        <span class="service-name">🧔 Моделирование бороды и уход</span>
+        <span class="price">600 ₽</span>
+      </div>
+      <div class="service-card" onclick="selectService(this, '🔥 Полный Комплекс', '1300')">
+        <span class="service-name">🔥 Комплекс (Стрижка + Борода)</span>
+        <span class="price">1300 ₽</span>
+      </div>
+    </div>
+
+    <!-- ШАГ 2: ДАТА И ВРЕМЯ -->
+    <div id="step-datetime" class="hidden">
+      <div class="section-title" style="margin-top: 40px;">2. Выбери дату и время</div>
+      <div class="grid-dates" id="dates-container"></div>
+      <div class="grid-slots" id="slots-container"></div>
+    </div>
+
+    <!-- ШАГ 3: ДАННЫЕ КЛИЕНТА -->
+    <div id="step-details" class="hidden">
+      <div class="section-title">3. Как к тебе обращаться?</div>
+      <input type="text" id="client-name" class="input-field" placeholder="ТВОЕ ИМЯ" required>
+      <input type="text" id="client-phone" class="input-field" placeholder="НОМЕР ТЕЛЕФОНА (ПО ЖЕЛАНИЮ)">
+      <button class="btn-submit" onclick="submitBooking()">Занять это время ⚡️</button>
+    </div>
+
+    <!-- ЭКРАН УСПЕХА -->
+    <div id="success-screen" class="hidden">
+      <h3>Запись успешно подтверждена!</h3>
+      <div id="success-msg" style="line-height: 1.8; font-size: 18px; margin: 20px 0;"></div>
+      <p>Ждем тебя вовремя. Если твои планы изменятся — предупреди мастера заранее! 🤝</p>
+    </div>
+
+  </div>
+
+  <script>
+    // ТВОЙ РАБОЧИЙ GOOGLE ШЛЮЗ
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxVsFy3G9JPkFhLRfIqX-cEEPvJeuwMd3oqiYwHjaFQ7qdFNbnRKiAOTivgWc33kvxdeA/exec";
+
+    let bookingData = { service: '', price: '', date: '', time: '', name: '', phone: '' };
+    let busySlotsGlobal = [];
+
+    // Загрузка занятых слотов
+    async function loadBusySlots() {
+      try {
+        let response = await fetch(GOOGLE_SCRIPT_URL);
+        let resData = await response.json();
+        busySlotsGlobal = resData.busy || [];
+      } catch (e) { console.error("Ошибка загрузки:", e); }
+    }
+    loadBusySlots();
+
+    function selectService(element, name, price) {
+      document.querySelectorAll('.service-card').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      bookingData.service = name;
+      bookingData.price = price;
+      
+      document.getElementById('step-datetime').classList.remove('hidden');
+      generateCalendar();
+      document.getElementById('step-datetime').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateCalendar() {
+      const container = document.getElementById('dates-container');
+      container.innerHTML = '';
+      document.getElementById('slots-container').innerHTML = '';
+      
+      let current = new Date();
+      let addedDays = 0;
+
+      while (addedDays < 7) {
+        current.setDate(current.getDate() + 1);
+        let dayOfWeek = current.getDay();
+        
+        // 1 - Понедельник, 2 - Вторник (Твои законные выходные)
+        if (dayOfWeek === 1 || dayOfWeek === 2) continue;
+
+        let year = current.getFullYear();
+        let month = String(current.getMonth() + 1).padStart(2, '0');
+        let day = String(current.getDate()).padStart(2, '0');
+        let fullDate = year + "-" + month + "-" + day;
+        
+        let daysList = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+        let visualDate = day + "." + month + " (" + daysList[dayOfWeek] + ")";
+
+        let btn = document.createElement('div');
+        btn.className = 'btn-choice';
+        btn.innerText = visualDate;
+        btn.onclick = function() {
+          document.querySelectorAll('#dates-container .btn-choice').forEach(el => el.classList.remove('active'));
+          btn.classList.add('active');
+          selectDate(fullDate);
+        };
+        container.appendChild(btn);
+        addedDays++;
+      }
+    }
+
+    function selectDate(dateStr) {
+      bookingData.date = dateStr;
+      const container = document.getElementById('slots-container');
+      container.innerHTML = '';
+      
+      // Рабочие часы по твоему бизнес-плану (с 10:00 до 20:00)
+      const allSlots = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
+      
+      allSlots.forEach(slot => {
+        let btn = document.createElement('div');
+        btn.className = 'btn-choice';
+        btn.innerText = slot;
+        
+        // Проверяем занятость по базе данных
