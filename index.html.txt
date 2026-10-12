@@ -1,0 +1,111 @@
+const GOOGLE_SCRIPT_URL = "https://google.com";
+
+let bookingData = { service: '', price: '', date: '', time: '', name: '', phone: '' };
+let busySlotsGlobal = [];
+
+async function loadBusySlots() {
+  try {
+    let response = await fetch(GOOGLE_SCRIPT_URL);
+    let resData = await response.json();
+    busySlotsGlobal = resData.busy || [];
+  } catch (e) {
+    console.error("Ошибка расписания:", e);
+  }
+}
+loadBusySlots();
+
+function selectService(element, name, price) {
+  document.querySelectorAll('.service-card').forEach(el => el.classList.remove('active'));
+  element.classList.add('active');
+  bookingData.service = name;
+  bookingData.price = price;
+  document.getElementById('step-datetime').classList.remove('hidden');
+  generateCalendar();
+  document.getElementById('step-datetime').scrollIntoView({ behavior: 'smooth' });
+}
+
+function generateCalendar() {
+  const container = document.getElementById('dates-container');
+  container.innerHTML = '';
+  document.getElementById('slots-container').innerHTML = '';
+  let current = new Date();
+  let addedDays = 0;
+  while (addedDays < 7) {
+    current.setDate(current.getDate() + 1);
+    let dayOfWeek = current.getDay();
+    if (dayOfWeek === 1 || dayOfWeek === 2) continue;
+    let year = current.getFullYear();
+    let month = String(current.getMonth() + 1).padStart(2, '0');
+    let day = String(current.getDate()).padStart(2, '0');
+    let fullDate = year + "-" + month + "-" + day;
+    let daysList = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+    let visualDate = day + "." + month + " (" + daysList[dayOfWeek] + ")";
+    let btn = document.createElement('div');
+    btn.className = 'btn-choice';
+    btn.innerText = visualDate;
+    btn.onclick = function() {
+      document.querySelectorAll('#dates-container .btn-choice').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+      selectDate(fullDate);
+    };
+    container.appendChild(btn);
+    addedDays++;
+  }
+}
+
+function selectDate(dateStr) {
+  bookingData.date = dateStr;
+  const container = document.getElementById('slots-container');
+  container.innerHTML = '';
+  const allSlots = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
+  allSlots.forEach(slot => {
+    let btn = document.createElement('div');
+    btn.className = 'btn-choice';
+    btn.innerText = slot;
+    if (busySlotsGlobal.includes(dateStr + "_" + slot)) {
+      btn.classList.add('disabled');
+    } else {
+      btn.onclick = function() {
+        document.querySelectorAll('#slots-container .btn-choice').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+        bookingData.time = slot;
+        document.getElementById('step-details').classList.remove('hidden');
+        document.getElementById('step-details').scrollIntoView({ behavior: 'smooth' });
+      };
+    }
+    container.appendChild(btn);
+  });
+}
+
+async function submitBooking() {
+  let nameField = document.getElementById('client-name').value.trim();
+  let phoneField = document.getElementById('client-phone').value.trim();
+  if (!nameField) { alert("Бро, черкани свое имя!"); return; }
+  bookingData.name = nameField;
+  bookingData.phone = phoneField || "Не указан 🙅‍♂️";
+  document.querySelector('.btn-submit').innerText = "Секунду, бронирую...";
+  document.querySelector('.btn-submit').disabled = true;
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bookingData)
+    });
+    document.getElementById('step-services').classList.add('hidden');
+    document.getElementById('step-datetime').classList.add('hidden');
+    document.getElementById('step-details').classList.add('hidden');
+    let dateParts = bookingData.date.split('-');
+    let visualDate = dateParts[2] + "." + dateParts[1] + "." + dateParts[0];
+    document.getElementById('success-msg').innerHTML = 
+      "💈 <b>Услуга:</b> " + bookingData.service + "<br>" +
+      "📅 <b>Дата:</b> " + visualDate + "<br>" +
+      "⏰ <b>Время:</b> " + bookingData.time + "<br>" +
+      "👤 <b>Бро:</b> " + bookingData.name;
+    document.getElementById('success-screen').classList.remove('hidden');
+  } catch (e) {
+    alert("Сбой сети. Попробуй еще раз!");
+    document.querySelector('.btn-submit').innerText = "Занять это время ⚡️";
+    document.querySelector('.btn-submit').disabled = false;
+  }
+}
